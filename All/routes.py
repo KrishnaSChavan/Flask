@@ -21,19 +21,20 @@ def account():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        flash('You have successfully registered',category=success)
-        return redirect(url_for("home"))
+        flash(f'You have successfully registered {form.username.data}',category='success')
+        return redirect(url_for("login"))
     return render_template("register.html",title="Register",form=form)
 
 @app.route("/login",methods = ['POST','GET'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == '123@qwe.asd' and form.password.data == '123456789':
-            flash('You have successfully registered',category=success)
+        if form.email.data == '123@qwe.asd' and form.password.data == 'pppppppp':
+            flash(f'You have successfully loggedin {form.email.data}',category='success')
             return redirect(url_for("account"))
         else:
-            return redirect(url_for("home"))
+            flash('Invalid email or password',category='danger')   
+            
     return render_template("login.html",title="Login",form=form)
 
 @app.route("/dashboard")

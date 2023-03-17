@@ -6,3 +6,12 @@
     background: rgba(207, 207, 207);
 }
 
+.formreg{
+    background: whitesmoke;
+    padding: 10%;
+    
+}
+.form-control{
+    background: rgb(253, 239, 239);
+    width: 400px;
+}

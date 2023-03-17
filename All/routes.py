@@ -1,6 +1,6 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,redirect,url_for,flash
 from All import app
-
+from All.forms import LoginForm,RegisterForm
 @app.route("/")
 @app.route("/home")
 def home():
@@ -14,14 +14,27 @@ def about():
 @app.route("/department")
 def department():
     return render_template("Department.html",title="Department")
-
-@app.route("/register")
+@app.route("/account")
+def account():
+    return render_template("Account_page.html",title="Account")
+@app.route("/register",methods = ['POST','GET'])
 def register():
-    return render_template("register.html",title="Register ")
+    form = RegisterForm()
+    if form.validate_on_submit():
+        flash('You have successfully registered',category=success)
+        return redirect(url_for("home"))
+    return render_template("register.html",title="Register",form=form)
 
-@app.route("/login")
+@app.route("/login",methods = ['POST','GET'])
 def login():
-    return render_template("login.html",title="Login")
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == '123@qwe.asd' and form.password.data == '123456789':
+            flash('You have successfully registered',category=success)
+            return redirect(url_for("account"))
+        else:
+            return redirect(url_for("home"))
+    return render_template("login.html",title="Login",form=form)
 
 @app.route("/dashboard")
 def dashboard():

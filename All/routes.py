@@ -1,6 +1,17 @@
-from flask import Flask,render_template,redirect,url_for,flash
+from flask import Flask,render_template,redirect,url_for,flash,request
 from All import app
 from All.forms import LoginForm,RegisterForm
+from pymysql import connections
+#from conf import *
+
+#db_conn = connections.Connection(
+#   host=customhost,
+#    port=3306,
+#    user=customuser,
+#    password=custompass,
+#    db=customdb
+
+#)
 @app.route("/")
 @app.route("/home")
 def home():
@@ -22,6 +33,13 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         flash(f'You have successfully registered {form.username.data}',category='success')
+        username = request.form['username']
+        email = request.form['email']
+        aadhar_no = request.form['aadhar_no']
+        password = request.form['password']
+        id = 2
+        insert_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s,%s)"
+        #cursor = db_conn.cursor()
         return redirect(url_for("login"))
     return render_template("register.html",title="Register",form=form)
 

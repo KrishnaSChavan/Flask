@@ -1,6 +1,6 @@
-customhost = 
-customuser = 
-custompass = 
-customdb = 
-custombucket = 
-customregion = 
+customhost = "database-5.cih6plmexrru.us-east-2.rds.amazonaws.com"
+customuser = "admin1"
+custompass = "12345678"
+customdb = "employe"
+custombucket = "addmem"
+customregion = "us-east-2"

@@ -2,8 +2,11 @@ from flask import Flask,render_template,redirect,url_for,flash,request
 from All import app
 from All.forms import LoginForm,RegisterForm
 from pymysql import connections
-from conf import *
+from All.config import *
 import boto3
+
+bucket = custombucket
+region = customregion
 
 db_conn = connections.Connection(
    host=customhost,
@@ -12,6 +15,9 @@ db_conn = connections.Connection(
     password=custompass,
     db=customdb
 )
+output = {}
+table = 'employe'
+
 @app.route("/")
 @app.route("/home")
 def home():

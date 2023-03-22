@@ -28,17 +28,7 @@
               {{form.email(class = "form-control form-control")}}
             {% endif %}
         </div>
-        <div class="form-group">
-          {{form.aadhar_no.label(class = "form-control-label")}}
-            {% if form.aadhar_no.errors%}
-              {{form.aadhar_no(class = "form-control form-control-lg is-invalid")}}
-                {% for error in form.aadhar_no.errors %}
-                  <span>{{error}}</span>
-                {% endfor %}
-            {% else %}
-              {{form.aadhar_no(class = "form-control form-control")}}
-            {% endif %}
-        </div>
+        
         <div class="form-group">
           {{form.password.label(class = "form-control-label")}}
             {% if form.password.errors%}

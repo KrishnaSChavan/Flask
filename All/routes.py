@@ -1,23 +1,8 @@
 from flask import Flask,render_template,redirect,url_for,flash,request
 from All import app
+from All import *
 from All.forms import LoginForm,RegisterForm
-from pymysql import connections
-from All.config import *
-import boto3
-
-bucket = custombucket
-region = customregion
-
-db_conn = connections.Connection(
-   host=customhost,
-    port=3306,
-    user=customuser,
-    password=custompass,
-    db=customdb
-)
-output = {}
-table = 'employe'
-
+from All.models import User,Memb
 @app.route("/")
 @app.route("/home")
 def home():
@@ -36,44 +21,13 @@ def account():
     return render_template("Account_page.html",title="Account")
 @app.route("/register",methods = ['POST','GET'])
 def register():
+    
     form = RegisterForm()
     if form.validate_on_submit():
+        user = User (username=form.username.data,email=form.email.data , password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
         flash(f'You have successfully registered {form.username.data}',category='success')
-        username = request.form['username']
-        email = request.form['email']
-        aadhar_no = request.form['aadhar_no']
-        password = request.form['password']
-        id = 2
-        emp_image_file = request. files ['emp_image_file']
-        insert_sql = "INSERT INTO employe VALUES (%s, %s, %s, %s,%s)"
-        cursor = db_conn.cursor()
-        try:
-
-            cursor.execute(insert_sql, (username, email, aadhar_no, password, id))
-            db_conn.commit()
-            
-            emp_image_file_name_in_s3 = "emp-id-" + str(email) + "_image_file"
-            s3 = boto3.resource('s3')
-
-            try:
-                print("Data inserted in MySQL RDS... uploading image to S3...")
-                s3.Bucket(custombucket).put_object(Key=emp_image_file_name_in_s3, Body=emp_image_file)
-                bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
-                s3_location = (bucket_location['LocationConstraint'])
-
-                if s3_location is None:
-                   s3_location = ''
-                else:
-                  s3_location = '-' + s3_location
-
-                
-
-            except Exception as e:
-               return str(e)
-
-        finally:
-            cursor.close()
-
         return redirect(url_for("login"))
     return render_template("register.html",title="Register",form=form)
 
@@ -81,11 +35,15 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == '123@qwe.asd' and form.password.data == 'pppppppp':
-            flash(f'You have successfully loggedin {form.email.data}',category='success')
-            return redirect(url_for("account"))
+        if User.query.filter_by(email=form.email.data).first():
+            user = User.query.filter_by(email=form.email.data).first()
+            if form.email.data == user.email and form.password.data == user.password:
+                flash(f'You have successfully loggedin {form.email.data}',category='success')
+                return redirect(url_for("account"))
+            else:
+                flash('Invalid password',category='danger')
         else:
-            flash('Invalid email or password',category='danger')   
+            flash('Invalid email',category='danger')
             
     return render_template("login.html",title="Login",form=form)
 

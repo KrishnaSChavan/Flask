@@ -2,7 +2,7 @@ from flask import Flask,render_template,redirect,url_for,flash,request
 from All import app
 from All import *
 from All.forms import LoginForm,RegisterForm
-from All.models import User,Memb
+from All.models import User
 @app.route("/")
 @app.route("/home")
 def home():

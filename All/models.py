@@ -1,8 +1,21 @@
-from All import db
-from All import * 
+from All import db,login_manager
+from All import *
 from datetime import datetime
+from flask_login import UserMixin
+from flask import redirect,url_for
 
-class User(db.Model):
+@login_manager.user_loader
+
+def load_user(user_id):
+    return User.query.get(user_id)
+
+@login_manager.unauthorized_handler 
+def unauthorized() :
+    
+    return redirect(url_for('register'))
+
+class User(db.Model,UserMixin):
+    tablename = 'users'
     id=db.Column(db.Integer , primary_key=True) 
     username=db.Column(db.String(20) , unique=True, nullable=False) 
     email=db.Column (db.String(120) , unique=True, nullable=False) 
@@ -12,5 +25,3 @@ class User(db.Model):
 
     def __repr__(self):
         return f'{self.username} : {self.email} : {self.date_created.strftime("%d/%m/%Y, %H:%M:%S" )}'
-    
-    

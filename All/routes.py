@@ -3,6 +3,7 @@ from All import app,bcrypt,db
 from All import *
 from All.forms import LoginForm,RegisterForm
 from All.models import User
+from flask_login import login_user,logout_user,current_user,login_required
 @app.route("/")
 @app.route("/home")
 def home():
@@ -16,12 +17,18 @@ def about():
 @app.route("/department")
 def department():
     return render_template("Department.html",title="Department")
+
+
 @app.route("/account")
+@login_required
 def account():
     return render_template("Account_page.html",title="Account")
+
+
 @app.route("/register",methods = ['POST','GET'])
 def register():
-    
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
     form = RegisterForm()
     if form.validate_on_submit():
         encrypted_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
@@ -34,11 +41,14 @@ def register():
 
 @app.route("/login",methods = ['POST','GET'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
     form = LoginForm()
     if form.validate_on_submit():
         if User.query.filter_by(email=form.email.data).first():
             user = User.query.filter_by(email=form.email.data).first()
             if form.email.data == user.email and bcrypt.check_password_hash(user.password,form.password.data):
+                login_user(user)
                 flash(f'You have successfully loggedin {form.email.data}',category='success')
                 return redirect(url_for("account"))
             else:
@@ -47,6 +57,11 @@ def login():
             flash('Invalid email',category='danger')
             
     return render_template("login.html",title="Login",form=form)
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 @app.route("/dashboard")
 def dashboard():

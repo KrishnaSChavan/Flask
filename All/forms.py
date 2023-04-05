@@ -16,4 +16,4 @@ class LoginForm(FlaskForm):
 
 class ResetrequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField(label='Login')
+    submit = SubmitField(label='Submit')

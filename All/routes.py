@@ -67,8 +67,16 @@ def logout():
 def dashboard():
     return render_template("Dashboard.html",title="Dashboard")
 
+def send_mail():
+    pass
 
 @app.route("/reset_request",methods = ['POST','GET'])
 def reset_request():
     form = ResetrequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_mail()
+            flash('Request sent. Check your mail','success')
+            return redirect(url_for("login"))
     return render_template("reset_request.html",title="Reset",form=form)

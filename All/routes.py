@@ -1,7 +1,7 @@
 from flask import Flask,render_template,redirect,url_for,flash,request
 from All import app,bcrypt,db
 from All import *
-from All.forms import LoginForm,RegisterForm
+from All.forms import LoginForm,RegisterForm,ResetrequestForm
 from All.models import User
 from flask_login import login_user,logout_user,current_user,login_required
 @app.route("/")
@@ -16,7 +16,7 @@ def about():
 
 @app.route("/department")
 def department():
-    return render_template("Department.html",title="Department")
+    return render_template("Homepage.html",title="Department")
 
 
 @app.route("/account")
@@ -49,7 +49,7 @@ def login():
             user = User.query.filter_by(email=form.email.data).first()
             if form.email.data == user.email and bcrypt.check_password_hash(user.password,form.password.data):
                 login_user(user)
-                flash(f'You have successfully loggedin {form.email.data}',category='success')
+                flash(f'You have successfully loggedin as {user.username}',category='success')
                 return redirect(url_for("account"))
             else:
                 flash('Invalid password',category='danger')
@@ -66,3 +66,9 @@ def logout():
 @app.route("/dashboard")
 def dashboard():
     return render_template("Dashboard.html",title="Dashboard")
+
+
+@app.route("/reset_request",methods = ['POST','GET'])
+def reset_request():
+    form = ResetrequestForm()
+    return render_template("reset_request.html",title="Reset",form=form)

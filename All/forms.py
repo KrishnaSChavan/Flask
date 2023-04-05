@@ -13,3 +13,7 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(),Length(min = 6, max = 15)])
     submit = SubmitField(label='Login')
+
+class ResetrequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField(label='Login')

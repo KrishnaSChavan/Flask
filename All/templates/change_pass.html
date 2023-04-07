@@ -1,0 +1,43 @@
+{%extends 'layout.html'%} {%block contentA%}
+<br><br>
+<div class="container">
+  <div class="formlog">
+    <form method="POST" action="">
+      {{form.hidden_tag()}}
+      <fieldset class = "form-group">
+        <legend classe="border-botton rb.4">Login</legend>
+        <div class="form-group">
+          {{form.password.label(class = "form-control-label")}}
+            {% if form.password.errors%}
+              {{form.password(class = "form-control form-control-lg is-invalid")}}
+                {% for error in form.password.errors %}
+                  <span>{{error}}</span>
+                {% endfor %}
+            {% else %}
+              {{form.password(class = "form-control form-control")}}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{form.confirm_password.label(class = "form-control-label")}}
+              {% if form.confirm_password.errors%}
+                {{form.confirm_password(class = "form-control form-control-lg is-invalid")}}
+                  {% for error in form.confirm_password.errors %}
+                    <span>{{error}}</span>
+                  {% endfor %}
+              {% else %}
+                {{form.confirm_password(class = "form-control form-control")}}
+              {% endif %}
+          </div>
+        
+          <br />
+          
+        
+      </fieldset>
+      <div class="form-group">
+        {{form.submit(class = "btn btn-primary btn-online-info")}} 
+        
+    </form>
+  </div>
+</div>
+{%endblock contentA%}
+

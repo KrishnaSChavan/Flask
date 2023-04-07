@@ -1,9 +1,11 @@
 from flask import Flask,render_template,redirect,url_for,flash,request
-from All import app,bcrypt,db
+from All import app,bcrypt,db,mail
 from All import *
-from All.forms import LoginForm,RegisterForm,ResetrequestForm
+from All.forms import LoginForm,RegisterForm,ResetrequestForm,ResetPasswordForm
 from All.models import User
 from flask_login import login_user,logout_user,current_user,login_required
+from flask_mail import Message
+
 @app.route("/")
 @app.route("/home")
 def home():
@@ -67,8 +69,15 @@ def logout():
 def dashboard():
     return render_template("Dashboard.html",title="Dashboard")
 
-def send_mail():
-    pass
+def send_mail(user):
+    token = user.get_token()
+    msg = Message('Password Reset',recipients=[user.email],sender='kc756953@gmail.com')
+    msg.body=f'''Reset Password follow link below
+    
+    {url_for('reset_token', token=token,_external=True)}
+    
+    '''
+    mail.send(msg)
 
 @app.route("/reset_request",methods = ['POST','GET'])
 def reset_request():
@@ -76,7 +85,25 @@ def reset_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
-            send_mail()
+            send_mail(user)
             flash('Request sent. Check your mail','success')
             return redirect(url_for("login"))
     return render_template("reset_request.html",title="Reset",form=form)
+
+
+@app.route('/reset_password/<token>',methods=['POST','GET'])
+def reset_token(token):
+    user = User.verify_token(token)
+    if user is None:
+        flash('Invalid token','warning')
+        return redirect(url_for('reset_request'))
+    
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+        hashed_password= bcrypt.generate_password_hash(form.password.data).decode('utf-8') 
+        user.password = hashed_password
+        db.session.commit()
+        flash('Password changed','success')
+        return redirect(url_for('login'))
+    return render_template('change_pass.html',title='Reset Password',legend='change_password',form=form)

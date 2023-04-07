@@ -7,13 +7,19 @@ class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(),Length(min = 6, max = 15)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField(label='Register')
+    submit = SubmitField(label='Register', validators=[DataRequired()])
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(),Length(min = 6, max = 15)])
-    submit = SubmitField(label='Login')
+    submit = SubmitField(label='Login', validators=[DataRequired()])
 
 class ResetrequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField(label='Submit')
+    submit = SubmitField(label='Submit', validators=[DataRequired()])
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired(),Length(min = 6, max = 15)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField(label='Change password', validators=[DataRequired()])

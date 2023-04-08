@@ -6,6 +6,9 @@ from All.models import User
 from flask_login import login_user,logout_user,current_user,login_required
 from flask_mail import Message
 
+file_name = ''
+
+
 @app.route("/")
 @app.route("/home")
 def home():
